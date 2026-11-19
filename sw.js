@@ -1,5 +1,5 @@
 // Einfacher Service Worker: App-Dateien offline verfügbar machen
-const CACHE = 'watching-weekend-v7';
+const CACHE = 'watching-weekend-v8';
 const FILES = ['./', './index.html', './style.css', './app.js', './manifest.json', './icon.svg',
   './icons/icon-180.png', './icons/icon-192.png', './icons/icon-512.png'];
 

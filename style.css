@@ -284,25 +284,13 @@ body.has-video .top {
 }
 body.has-video .top::after { display: none; }
 body.has-video main h2 { color: #fff; text-shadow: 0 1px 4px rgba(0, 0, 0, .8); }
-/* Holografische Glas-Karten: Video scheint durch, schimmernder Regenbogen-Glanz */
+/* Karten über dem Video: nur dunkel schattiert, ohne Effekte – das Video scheint leicht durch */
 body.has-video .card, body.has-video .match-card {
-  position: relative; overflow: hidden;
-  background: linear-gradient(135deg, rgba(10, 14, 12, .62), rgba(0, 0, 0, .72) 60%, rgba(10, 14, 12, .66));
-  border: 1px solid rgba(255, 255, 255, .28);
-  backdrop-filter: blur(4px) saturate(140%); -webkit-backdrop-filter: blur(4px) saturate(140%);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .35);
-  color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, .6);
+  background: rgba(0, 0, 0, .66);
+  border: 1px solid rgba(255, 255, 255, .18);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .35);
+  color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, .5);
 }
-body.has-video .card::before, body.has-video .match-card::before {
-  content: ""; position: absolute; inset: -50%; pointer-events: none; z-index: 0;
-  background: linear-gradient(115deg,
-    transparent 30%, rgba(255, 0, 170, .12) 40%, rgba(0, 220, 255, .12) 47%,
-    rgba(120, 255, 120, .10) 53%, rgba(255, 230, 0, .10) 60%, transparent 70%);
-  mix-blend-mode: screen; animation: holo 7s linear infinite;
-}
-@keyframes holo { from { transform: translateX(-30%) rotate(0deg); } to { transform: translateX(30%) rotate(0deg); } }
-body.has-video .card > *, body.has-video .match-card > * { position: relative; z-index: 1; }
-@media (prefers-reduced-motion: reduce) { body.has-video .card::before, body.has-video .match-card::before { animation: none; } }
 
 /* Schrift & Details auf Glas hell machen */
 body.has-video .sub, body.has-video .next-label { color: rgba(255, 255, 255, .78); }
