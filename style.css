@@ -1,0 +1,447 @@
+/* ===== Farbschemata ===== */
+/* Werder / Standard: Grün-Weiß */
+:root, [data-theme="svw"], .match-card.svw {
+  --p-900: #06321f;
+  --p-800: #0b4d32;
+  --p-700: #0f6b45;
+  --p-100: #e3f4ea;
+  --p-50:  #f2faf5;
+}
+/* Liverpool: Rot-Weiß */
+[data-theme="lfc"], .match-card.lfc {
+  --p-900: #5c0010;
+  --p-800: #a5001c;
+  --p-700: #c8102e;
+  --p-100: #fbe3e7;
+  --p-50:  #fdf3f4;
+}
+:root {
+  --card: #ffffff;
+  --on-p: #ffffff;
+  --text: #13261c;
+  --muted: #6a7a72;
+  --line: #e0e6e2;
+}
+body[data-theme="lfc"] { --text: #2a1216; --line: #f0dde0; }
+/* Formel 1: Schwarz mit Weiß */
+body[data-theme="f1"] {
+  --p-900: #ffffff;
+  --p-800: #000000;
+  --p-700: #ffffff;
+  --p-100: #1c1c1c;
+  --p-50:  #000000;
+  --card: #111111;
+  --text: #ffffff;
+  --muted: #9a9a9a;
+  --line: #2a2a2a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+button, a { touch-action: manipulation; }
+img { -webkit-user-drag: none; }
+button { -webkit-user-select: none; user-select: none; }
+
+body {
+  background: var(--p-50);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh; min-height: 100dvh;
+  padding-bottom: calc(76px + env(safe-area-inset-bottom));
+  padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right);
+  transition: background .3s;
+  overscroll-behavior-y: contain;   /* eigenes Ziehen-zum-Aktualisieren */
+}
+
+/* ---------- Ziehen zum Aktualisieren ---------- */
+.ptr {
+  position: fixed; left: 50%; top: calc(70px + env(safe-area-inset-top)); z-index: 9;
+  width: 38px; height: 38px; margin-left: -19px; border-radius: 50%;
+  background: #fff; color: var(--p-800); font-size: 1.3rem;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .2);
+  transform: translateY(-80px); opacity: 0; pointer-events: none;
+}
+.ptr.spin { animation: spin 1s linear infinite; }
+
+/* Tipp-Feedback */
+.seg-btn:active, .tabbar button:active, .icon-btn:active, .btn:active, .video:active { transform: scale(.96); }
+.seg-btn, .tabbar button, .icon-btn, .btn, .video { transition: transform .1s; }
+
+/* ---------- Kopfzeile ---------- */
+.top {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: calc(12px + env(safe-area-inset-top)) 16px 12px;
+  background: linear-gradient(135deg, var(--p-800), var(--p-700));
+  color: var(--on-p);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, .2);
+  transition: background .3s;
+}
+body[data-theme="f1"] .top { background: #000; border-bottom: 1px solid #222; }
+.top::after { /* weißer Streifen wie auf einem Trikot */
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 4px;
+  background: repeating-linear-gradient(90deg, #fff 0 24px, transparent 24px 36px);
+  opacity: .35;
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-icon { width: 40px; height: 40px; border-radius: 10px; box-shadow: 0 0 0 2px rgba(255, 255, 255, .6); }
+.logo { font-size: 1.25rem; font-weight: 800; letter-spacing: .01em; line-height: 1.1; }
+.logo span { display: block; font-size: .68rem; font-weight: 500; opacity: .8; letter-spacing: .08em; text-transform: uppercase; }
+
+.icon-btn {
+  background: rgba(255, 255, 255, .15); border: 1px solid rgba(255, 255, 255, .5); color: #fff;
+  width: 40px; height: 40px; border-radius: 50%; font-size: 1.3rem; cursor: pointer;
+}
+.icon-btn.spin { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+main { padding: 16px; max-width: 640px; margin: 0 auto; }
+
+h2 {
+  font-size: .78rem; text-transform: uppercase; letter-spacing: .14em; font-weight: 700;
+  margin: 22px 2px 10px; color: var(--p-700);
+}
+h2:first-child { margin-top: 4px; }
+
+/* ---------- Allgemeine Karten ---------- */
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+}
+
+.tag {
+  display: inline-block; font-size: .7rem; font-weight: 700; letter-spacing: .06em;
+  padding: 3px 9px; border-radius: 999px; margin-bottom: 8px; text-transform: uppercase;
+  background: var(--p-100); color: var(--p-800);
+}
+.title { font-weight: 700; font-size: 1.05rem; }
+.sub   { color: var(--muted); font-size: .85rem; margin-top: 3px; }
+
+.row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: .9rem; }
+.row:last-child { border-bottom: none; }
+.row .pos { color: var(--p-700); font-weight: 800; width: 26px; }
+.row .name { flex: 1; }
+.row .pts { font-weight: 700; color: var(--p-800); }
+
+/* ---------- Formel 1 ---------- */
+.f1card { border-left: 5px solid #e10600; }
+body[data-theme="f1"] .f1card { border-color: #2a2a2a; border-left-color: #fff; }
+body[data-theme="f1"] .tag { background: #fff; color: #000; }
+body[data-theme="f1"] .row .pts, body[data-theme="f1"] .row .pos { color: #fff; }
+.next-label { margin-top: 10px; font-size: .85rem; color: var(--muted); }
+.next-label b { color: var(--text); }
+.countdown {
+  display: inline-block; margin-top: 6px; padding: 6px 12px; border-radius: 8px;
+  background: var(--p-800); color: #fff;
+  font-family: ui-monospace, Consolas, monospace; font-size: 1.25rem; font-weight: 700;
+}
+body[data-theme="f1"] .countdown { background: #fff; color: #000; }
+.sessions { margin-top: 12px; }
+.session.done { color: var(--muted); text-decoration: line-through; }
+.session.next { font-weight: 700; }
+.session.next .name::before { content: "▶ "; color: #e10600; }
+body[data-theme="f1"] .session.next .name::before { color: #fff; }
+.race-title { display: flex; align-items: center; gap: 8px; }
+.flag { width: 28px; height: 20px; object-fit: cover; border-radius: 3px; box-shadow: 0 0 0 1px rgba(255, 255, 255, .25); flex-shrink: 0; }
+.row .flag { width: 22px; height: 15px; }
+
+/* Fahrer / Teams mit Teamfarbe */
+.standing { position: relative; padding-left: 10px; }
+.standing::before {
+  content: ""; position: absolute; left: 0; top: 6px; bottom: 6px; width: 4px; border-radius: 2px; background: var(--team);
+}
+.standing .pos { width: 30px; height: 26px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; }
+.standing .pos.gold {
+  color: #ffd34d !important; font-size: 1.25rem; font-weight: 900;
+  border: 2px solid #d4a017; background: rgba(212, 160, 23, .15);
+  text-shadow: 0 0 8px rgba(255, 200, 40, .8);
+  box-shadow: 0 0 12px rgba(212, 160, 23, .5);
+}
+.standing.champion { background: linear-gradient(90deg, rgba(212, 160, 23, .22), transparent 80%); border-radius: 8px; }
+.standing.champion .name b { color: #ffd34d; }
+.standing .num {
+  min-width: 30px; text-align: center; font-weight: 800; font-style: italic; color: var(--team); font-size: 1rem;
+}
+.standing .swatch { width: 30px; height: 14px; border-radius: 3px; background: var(--team); }
+.standing .name b { display: block; font-weight: 700; }
+.standing .team-name { font-size: .75rem; color: var(--team); font-weight: 600; }
+.champ { font-size: .68rem; font-weight: 700; color: #d4a017; border: 1px solid #d4a017; border-radius: 999px; padding: 2px 7px; white-space: nowrap; }
+
+.session em { font-style: normal; font-size: .7rem; background: #e10600; color: #fff; padding: 1px 6px; border-radius: 4px; margin-left: 4px; }
+
+/* ---------- Fußball: klassische Spielkarte ---------- */
+.seg {
+  display: flex; background: #fff; border: 2px solid var(--p-800);
+  border-radius: 12px; overflow: hidden; margin-bottom: 6px;
+}
+.seg-btn {
+  flex: 1; padding: 11px 6px; border: none; background: #fff; color: var(--p-800);
+  font-weight: 700; font-size: .95rem; cursor: pointer; transition: background .2s, color .2s;
+}
+.seg-btn.active { background: var(--p-800); color: #fff; }
+
+h2.comp {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--p-800); font-size: .85rem; margin-top: 20px;
+}
+h2.comp::after { content: ""; flex: 1; height: 2px; background: var(--p-100); }
+h2.comp .comp-logo { width: 26px; height: 26px; object-fit: contain; }
+h2.comp .cup { width: 24px; height: 24px; color: #b8901c; } /* Pokale in Gold */
+
+/* ---------- Ligatabelle ---------- */
+.table-card { padding: 6px 8px; }
+table.league { width: 100%; border-collapse: collapse; font-size: .82rem; font-variant-numeric: tabular-nums; }
+.league th { font-size: .7rem; color: var(--muted); font-weight: 700; padding: 6px 3px; text-align: center; border-bottom: 2px solid var(--p-800); }
+.league td { padding: 7px 3px; text-align: center; border-bottom: 1px solid var(--line); }
+.league tr:last-child td { border-bottom: none; }
+.league .tn { text-align: left; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; }
+.league .tp { font-weight: 800; color: var(--p-800); width: 22px; }
+.league .tl { width: 26px; }
+.league .tl img { width: 20px; height: 20px; object-fit: contain; vertical-align: middle; }
+.league .tpts { font-weight: 800; color: var(--p-800); }
+.league tr.t-top td.tp { color: #fff; background: var(--p-700); border-radius: 6px; }
+.league tr.t-bottom td.tp { color: #fff; background: #b3261e; border-radius: 6px; }
+body[data-theme="lfc"] .league tr.t-bottom td.tp { background: #555; }
+.league tr.own td { background: var(--p-100); font-weight: 700; }
+.league tr.gap td { color: var(--muted); padding: 2px; letter-spacing: .3em; border-bottom: 1px solid var(--line); }
+
+.match-card {
+  background: #fff; color: #13261c; border: 1px solid #e0e6e2; border-radius: 12px;
+  margin-bottom: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+}
+.mc-head {
+  display: flex; justify-content: space-between; gap: 8px; padding: 7px 14px;
+  background: var(--p-800); color: #fff; font-size: .75rem; font-weight: 600; letter-spacing: .03em;
+}
+.mc-ha { opacity: .75; text-transform: uppercase; white-space: nowrap; }
+.mc-body { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 14px 10px; }
+.team { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; font-weight: 600; font-size: .88rem; }
+.team img { width: 44px; height: 44px; object-fit: contain; }
+.kick {
+  min-width: 82px; text-align: center; border: 2px solid var(--p-800); border-radius: 8px; overflow: hidden;
+}
+.kick-date { background: var(--p-100); color: var(--p-800); font-size: .7rem; font-weight: 700; padding: 3px 4px; }
+.kick-time { font-size: 1.25rem; font-weight: 800; color: var(--p-900); padding: 3px 4px; font-variant-numeric: tabular-nums; }
+.mc-foot {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  border-top: 1px dashed #e0e6e2; padding: 8px 14px; font-size: .8rem; color: #6a7a72;
+}
+.stadium { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cd { white-space: nowrap; }
+.cd b { color: var(--p-800); font-family: ui-monospace, Consolas, monospace; }
+
+/* ---------- Watching ---------- */
+.result {
+  min-width: 82px; text-align: center; font-size: 1.6rem; font-weight: 900; color: var(--p-900);
+  border: 2px solid var(--p-800); border-radius: 8px; padding: 4px 6px; font-variant-numeric: tabular-nums;
+}
+.videos { border-top: 1px dashed #e0e6e2; padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+.video { display: flex; gap: 10px; text-decoration: none; color: inherit; align-items: center; }
+.thumb { position: relative; width: 132px; flex-shrink: 0; aspect-ratio: 16/9; border-radius: 8px; overflow: hidden; background: #ddd; }
+.thumb img { width: 100%; height: 100%; object-fit: cover; }
+.thumb .play {
+  position: absolute; inset: 0; margin: auto; width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(0, 0, 0, .6); color: #fff; display: flex; align-items: center; justify-content: center; font-size: .9rem;
+}
+.thumb .dur { position: absolute; right: 4px; bottom: 4px; background: rgba(0, 0, 0, .75); color: #fff; font-size: .65rem; padding: 1px 5px; border-radius: 4px; }
+.v-info { min-width: 0; }
+.v-title { font-weight: 700; font-size: .85rem; line-height: 1.25; margin-top: 3px; }
+.sender { font-size: .65rem; font-weight: 800; padding: 2px 7px; border-radius: 4px; color: #fff; text-transform: uppercase; letter-spacing: .05em; }
+.sender.ard { background: #001a4b; }
+.sender.zdf { background: #fa7d19; }
+.no-video { font-size: .82rem; color: #6a7a72; text-align: center; }
+.links { display: flex; gap: 8px; justify-content: center; }
+.btn { text-decoration: none; color: #fff; font-weight: 700; font-size: .8rem; padding: 9px 14px; border-radius: 8px; white-space: nowrap; }
+.links { flex-wrap: wrap; }
+@media (max-width: 360px) { .btn { font-size: .72rem; padding: 9px 10px; } }
+.btn.ard { background: #001a4b; }
+.btn.zdf { background: #fa7d19; }
+.btn.dazn { background: #0c161c; color: #f8fc00; }
+.btn.sky { background: linear-gradient(135deg, #000f9f, #e10a6e); }
+
+/* ---------- Hintergrund-Video (Startseite) ---------- */
+.bg-video { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: #000; display: none; }
+body.has-video .bg-video { display: block; }
+.bg-video iframe {
+  position: absolute; top: 50%; left: 50%; border: 0; pointer-events: none;
+  width: max(100vw, 177.78vh); height: max(100vh, 56.25vw);   /* 16:9 bildschirmfüllend */
+  transform: translate(-50%, -50%) scale(1.15);                  /* YouTube-Ränder abschneiden */
+}
+.bg-video::after { /* Abdunkeln, damit die Karten lesbar bleiben */
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, .35), rgba(0, 0, 0, .12) 40%, rgba(0, 0, 0, .45));
+}
+body.has-video { background: transparent; }
+/* Startseite mit Video: keine grüne Kopfleiste, Logo und Knopf schweben über dem Video */
+body.has-video .top {
+  background: linear-gradient(180deg, rgba(0, 0, 0, .55), transparent);
+  box-shadow: none;
+}
+body.has-video .top::after { display: none; }
+body.has-video main h2 { color: #fff; text-shadow: 0 1px 4px rgba(0, 0, 0, .8); }
+/* Holografische Glas-Karten: Video scheint durch, schimmernder Regenbogen-Glanz */
+body.has-video .card, body.has-video .match-card {
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, rgba(10, 14, 12, .62), rgba(0, 0, 0, .72) 60%, rgba(10, 14, 12, .66));
+  border: 1px solid rgba(255, 255, 255, .28);
+  backdrop-filter: blur(4px) saturate(140%); -webkit-backdrop-filter: blur(4px) saturate(140%);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .35);
+  color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, .6);
+}
+body.has-video .card::before, body.has-video .match-card::before {
+  content: ""; position: absolute; inset: -50%; pointer-events: none; z-index: 0;
+  background: linear-gradient(115deg,
+    transparent 30%, rgba(255, 0, 170, .12) 40%, rgba(0, 220, 255, .12) 47%,
+    rgba(120, 255, 120, .10) 53%, rgba(255, 230, 0, .10) 60%, transparent 70%);
+  mix-blend-mode: screen; animation: holo 7s linear infinite;
+}
+@keyframes holo { from { transform: translateX(-30%) rotate(0deg); } to { transform: translateX(30%) rotate(0deg); } }
+body.has-video .card > *, body.has-video .match-card > * { position: relative; z-index: 1; }
+@media (prefers-reduced-motion: reduce) { body.has-video .card::before, body.has-video .match-card::before { animation: none; } }
+
+/* Schrift & Details auf Glas hell machen */
+body.has-video .sub, body.has-video .next-label { color: rgba(255, 255, 255, .78); }
+body.has-video .next-label b, body.has-video .title, body.has-video .wx-place, body.has-video .wx-temp { color: #fff; }
+body.has-video .tag { background: rgba(255, 255, 255, .22); color: #fff; }
+body.has-video .countdown { background: rgba(0, 0, 0, .45); border: 1px solid rgba(255, 255, 255, .4); }
+body.has-video .f1card { border-left: 4px solid #e10600; }
+body.has-video .mc-head { background: color-mix(in srgb, var(--p-800) 75%, transparent); }
+body.has-video .kick { border-color: rgba(255, 255, 255, .7); background: rgba(0, 0, 0, .25); }
+body.has-video .kick-date { background: rgba(255, 255, 255, .22); color: #fff; }
+body.has-video .kick-time { color: #fff; }
+body.has-video .mc-foot { color: rgba(255, 255, 255, .8); border-top-color: rgba(255, 255, 255, .3); }
+body.has-video .cd b { color: #fff; }
+body.has-video .team img { filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .5)); }
+.video-toggle { display: flex; justify-content: flex-end; margin-bottom: -6px; }
+.chip-btn {
+  border: 1px solid var(--line); background: #fff; color: var(--p-800); font-weight: 700; font-size: .75rem;
+  padding: 6px 12px; border-radius: 999px; cursor: pointer;
+}
+body.has-video .chip-btn { background: rgba(0, 0, 0, .5); color: #fff; border-color: rgba(255, 255, 255, .4); }
+
+/* ---------- Kalender ---------- */
+.cal { padding: 12px; }
+.cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.cal-title { font-weight: 800; font-size: 1.05rem; color: var(--p-800); text-transform: capitalize; }
+.cal-nav {
+  width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: #fff;
+  font-size: 1.5rem; color: var(--p-800); cursor: pointer; line-height: 1;
+}
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.cal-wd { text-align: center; font-size: .7rem; font-weight: 700; color: var(--muted); padding: 4px 0; }
+.cal-cell {
+  aspect-ratio: 1; border: none; background: none; border-radius: 10px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  font: inherit; color: var(--text); min-height: 38px;
+}
+.cal-cell.empty { cursor: default; }
+.cal-cell.has { background: var(--p-50); }
+.cal-num { font-size: .9rem; font-weight: 600; }
+.cal-cell.today .cal-num { color: var(--p-800); font-weight: 900; text-decoration: underline; text-underline-offset: 3px; }
+.cal-cell.sel { background: var(--p-800); }
+.cal-cell.sel .cal-num { color: #fff; }
+.dots { display: flex; gap: 3px; height: 6px; }
+.dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+.dot.f1 { background: #111; }
+.dot.svw { background: #1e9e63; }
+.dot.lfc { background: #c8102e; }
+.cal-cell.sel .dot.f1 { background: #fff; }
+.cal-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 10px; font-size: .75rem; color: var(--muted); }
+.cal-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.cal-today { margin-left: auto; border: 1px solid var(--p-800); color: var(--p-800); background: #fff; border-radius: 999px; padding: 5px 12px; font-weight: 700; font-size: .75rem; cursor: pointer; }
+.cal-event { display: flex; gap: 12px; padding: 10px 0 10px 10px; border-bottom: 1px solid var(--line); border-left: 4px solid #111; margin-bottom: 6px; border-radius: 2px; }
+.cal-event:last-child { border-bottom: none; margin-bottom: 0; }
+.cal-event.svw { border-left-color: #1e9e63; }
+.cal-event.lfc { border-left-color: #c8102e; }
+.ce-time { font-weight: 800; color: var(--p-800); min-width: 52px; font-size: .85rem; font-variant-numeric: tabular-nums; }
+.ce-title { font-weight: 700; font-size: .9rem; }
+.cal-none { text-align: center; padding: 10px 0; }
+
+/* ---------- Wetter ---------- */
+.wx-place { font-weight: 800; color: var(--p-800); margin-bottom: 8px; }
+.wx-now { display: flex; align-items: center; gap: 16px; }
+.wx-icon { font-size: 3rem; }
+.wx-temp { font-size: 2.4rem; font-weight: 800; color: var(--p-800); line-height: 1; }
+.wx-days {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 14px; padding-top: 12px;
+  border-top: 1px solid var(--line); text-align: center; font-size: .75rem;
+}
+.wx-days .d { color: var(--muted); }
+.wx-days .i { font-size: 1.3rem; margin: 4px 0; }
+.wx-days .hi { color: var(--p-800); font-weight: 700; }
+.wx-days .lo { color: var(--muted); }
+.wx-days .rain { color: #1f6fb2; font-size: .66rem; font-weight: 700; margin-top: 3px; white-space: nowrap; }
+
+.loading, .err { text-align: center; color: var(--muted); padding: 30px 0; }
+.err { color: #b3261e; }
+
+/* ---------- Tab-Leiste ---------- */
+.tabbar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 10;
+  display: flex; justify-content: space-around;
+  background: #fff;
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, .08);
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+}
+.tabbar button {
+  background: none; border: none; color: #6a7a72;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  font-size: .7rem; font-weight: 600; padding: 6px 8px; border-radius: 12px; cursor: pointer;
+}
+.tabbar button span { font-size: 1.3rem; filter: grayscale(1) opacity(.55); }
+.tabbar button.active { color: var(--p-800); background: var(--p-100); }
+.tabbar button.active span { filter: none; }
+body[data-theme="f1"] .tabbar { background: #000; border-top-color: #222; }
+body[data-theme="f1"] .tabbar button.active { color: #000; background: #fff; }
+.tabbar button { flex: 1; min-height: 50px; max-width: 90px; }
+
+/* ---------- Kleine Handys (z. B. iPhone SE, 320–360 px) ---------- */
+@media (max-width: 360px) {
+  main { padding: 12px 10px; }
+  .logo { font-size: 1.05rem; }
+  .logo span { font-size: .6rem; }
+  .brand-icon { width: 34px; height: 34px; }
+  .team { font-size: .78rem; }
+  .team img { width: 36px; height: 36px; }
+  .kick, .result { min-width: 70px; }
+  .kick-time { font-size: 1.1rem; }
+  .result { font-size: 1.35rem; }
+  .league { font-size: .74rem; }
+  .league .tn { max-width: 84px; }
+  .league th, .league td { padding-left: 2px; padding-right: 2px; }
+  .thumb { width: 108px; }
+  .tabbar button { font-size: .62rem; padding: 6px 2px; }
+  .standing .num { min-width: 24px; }
+  .wx-days { font-size: .68rem; }
+  .mc-foot { font-size: .72rem; }
+}
+/* ---------- Querformat (Handy quer) & Tablet ---------- */
+@media (min-width: 700px) {
+  .tabbar { justify-content: center; gap: 12px; }
+  main { max-width: 1000px; }
+  /* Startseite: Abschnitte nebeneinander */
+  .sections { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0 16px; align-items: start; }
+  /* Kalender: Monat links, Termine rechts */
+  .cal-layout { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(280px, 1fr); gap: 16px; align-items: start; }
+  .cal-layout h2:first-child { margin-top: 4px; }
+  /* Spiele, Videos, Wetter zweispaltig */
+  .match-list-grid, .wx-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; align-items: start; }
+}
+
+/* Handy quer gedreht → Hinweis, die App ist fürs Hochformat gemacht */
+.rotate-hint { display: none; }
+@media (orientation: landscape) and (max-height: 520px) {
+  .rotate-hint {
+    display: flex; position: fixed; inset: 0; z-index: 100; flex-direction: column; gap: 14px;
+    align-items: center; justify-content: center; text-align: center;
+    background: #0b4d32; color: #fff; font-weight: 700; font-size: 1.05rem;
+  }
+  .rotate-hint .ico { font-size: 3rem; animation: tilt 1.6s ease-in-out infinite; }
+  @keyframes tilt { 0%, 100% { transform: rotate(90deg); } 50% { transform: rotate(0deg); } }
+}

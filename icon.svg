@@ -1,0 +1,50 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <!-- Zielflagge-Muster (Ziellinie) -->
+    <pattern id="chk" width="40" height="40" patternUnits="userSpaceOnUse">
+      <rect width="40" height="40" fill="#ffffff"/>
+      <rect width="20" height="20" fill="#111111"/>
+      <rect x="20" y="20" width="20" height="20" fill="#111111"/>
+    </pattern>
+    <clipPath id="r"><rect width="512" height="512" rx="110"/></clipPath>
+  </defs>
+
+  <g clip-path="url(#r)">
+    <rect width="512" height="512" fill="#000000"/>
+    <!-- Boden / Fahrbahn -->
+    <rect y="372" width="512" height="140" fill="#1c1c1c"/>
+    <!-- Ziellinie (schachbrett, senkrecht in der Mitte-rechts) -->
+    <rect x="296" y="60" width="40" height="452" fill="url(#chk)"/>
+    <!-- Bewegungsstreifen hinter dem Ball -->
+    <g stroke="#ffffff" stroke-linecap="round" opacity=".8">
+      <line x1="40"  y1="250" x2="170" y2="250" stroke-width="10"/>
+      <line x1="70"  y1="300" x2="180" y2="300" stroke-width="10" opacity=".7"/>
+      <line x1="20"  y1="350" x2="190" y2="350" stroke-width="10" opacity=".5"/>
+    </g>
+  </g>
+
+  <!-- Fußball, rollt gerade über die Linie (liegt auf dem Boden) -->
+  <clipPath id="ballClip"><circle r="92"/></clipPath>
+  <g transform="translate(300 280) rotate(-20)">
+    <circle r="92" fill="#ffffff"/>
+    <g clip-path="url(#ballClip)" fill="#000">
+      <!-- Mittleres Fünfeck -->
+      <polygon points="0,-30 28.5,-9.3 17.6,24.3 -17.6,24.3 -28.5,-9.3"/>
+      <!-- Äußere Fünfecke (am Rand angeschnitten) -->
+      <g id="outer"><polygon points="0,-120 27,-100 17,-68 -17,-68 -27,-100"/></g>
+      <use href="#outer" transform="rotate(72)"/>
+      <use href="#outer" transform="rotate(144)"/>
+      <use href="#outer" transform="rotate(216)"/>
+      <use href="#outer" transform="rotate(288)"/>
+      <!-- Nähte -->
+      <g stroke="#000" stroke-width="6" stroke-linecap="round">
+        <line x1="0" y1="-30" x2="0" y2="-68"/>
+        <line x1="0" y1="-30" x2="0" y2="-68" transform="rotate(72)"/>
+        <line x1="0" y1="-30" x2="0" y2="-68" transform="rotate(144)"/>
+        <line x1="0" y1="-30" x2="0" y2="-68" transform="rotate(216)"/>
+        <line x1="0" y1="-30" x2="0" y2="-68" transform="rotate(288)"/>
+      </g>
+    </g>
+    <circle r="94" fill="none" stroke="#ffffff" stroke-width="5"/>
+  </g>
+</svg>
