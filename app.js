@@ -307,27 +307,72 @@ async function loadCalendarEvents() {
   return events;
 }
 
-// ---------- Hintergrund-Video (Startseite) ----------
-// Offizielle YouTube-Videos: fahrender Ferrari SF-26 (Kanal Ferrari), Füllkrugs Tore für Werder (Kanal Werder Bremen)
-const BG_VIDEOS = ['mLkFAJyu3tI', 'YssTfEVT3XE'];
-function bgVideoEnabled() {
-  const s = localStorage.getItem('bgVideo');
-  if (s !== null) return s === '1';
-  return !(navigator.connection && navigator.connection.saveData);   // Datensparmodus → standardmäßig aus
-}
-function updateBgVideo() {
+// ---------- Hintergrund (Startseite): Ferrari- und Werder-Logo im Wechsel ----------
+// Alle 5 Sekunden wechselt das Logo; beim Wechsel verschwimmt das Bild wie eine Wasseroberfläche.
+const BG_LOGOS = [
+  { src: 'https://upload.wikimedia.org/wikipedia/de/c/c0/Scuderia_Ferrari_Logo.svg', tint: '#6e0000', alt: 'Scuderia Ferrari' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/b/be/SV-Werder-Bremen-Logo.svg', tint: '#06321f', alt: 'SV Werder Bremen' },
+];
+const BG_INTERVAL = 5000;     // Wechsel alle 5 Sekunden
+const RIPPLE_MS = 1800;       // Dauer des Wasser-Effekts
+let bgTimer = null, bgIndex = 0, rippleFrame = null;
+
+function updateBgLogos() {
   const box = document.getElementById('bg-video');
-  const want = currentTab === 'home' && bgVideoEnabled();
-  document.body.classList.toggle('has-video', want);
-  if (!want) { box.innerHTML = ''; return; }
+  const want = currentTab === 'home';
+  document.body.classList.toggle('has-bg', want);
+  if (!want) {
+    clearInterval(bgTimer); bgTimer = null;
+    cancelAnimationFrame(rippleFrame);
+    box.innerHTML = '';
+    return;
+  }
   if (box.firstChild) return;   // läuft schon
-  const [first, ...rest] = BG_VIDEOS;
-  const params = new URLSearchParams({
-    autoplay: 1, mute: 1, loop: 1, playlist: [first, ...rest].join(','), controls: 0, playsinline: 1,
-    modestbranding: 1, rel: 0, disablekb: 1, iv_load_policy: 3, fs: 0,
-  });
-  box.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${first}?${params}"
-    title="Hintergrundvideo" allow="autoplay; encrypted-media" tabindex="-1" aria-hidden="true"></iframe>`;
+  bgIndex = 0;
+  box.style.setProperty('--tint', BG_LOGOS[0].tint);
+  box.innerHTML = `
+    <svg class="water-defs" width="0" height="0" aria-hidden="true">
+      <filter id="water" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence id="water-turb" type="fractalNoise" baseFrequency="0.012 0.035" numOctaves="2" seed="7" result="noise"/>
+        <feDisplacementMap id="water-disp" in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </svg>
+    <div class="logo-stage">
+      ${BG_LOGOS.map((l, i) => `<img class="bg-logo ${i === 0 ? 'show' : ''}" src="${l.src}" alt="${l.alt}" decoding="async">`).join('')}
+    </div>`;
+  bgTimer = setInterval(nextBgLogo, BG_INTERVAL);
+}
+
+function nextBgLogo() {
+  const box = document.getElementById('bg-video');
+  const stage = box.querySelector('.logo-stage');
+  if (!stage || document.hidden) return;
+  const imgs = stage.querySelectorAll('.bg-logo');
+  const next = (bgIndex + 1) % BG_LOGOS.length;
+  const swap = () => {
+    imgs[bgIndex].classList.remove('show');
+    imgs[next].classList.add('show');
+    box.style.setProperty('--tint', BG_LOGOS[next].tint);
+    bgIndex = next;
+  };
+  // Bei "Bewegung reduzieren" nur sanft überblenden
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return swap();
+
+  const turb = box.querySelector('#water-turb'), disp = box.querySelector('#water-disp');
+  stage.classList.add('rippling');
+  const t0 = performance.now();
+  let swapped = false;
+  const step = now => {
+    const t = Math.min(1, (now - t0) / RIPPLE_MS);
+    const wave = Math.sin(Math.PI * t);                       // 0 → 1 → 0
+    disp.setAttribute('scale', (wave * 80).toFixed(1));       // Stärke der Verzerrung
+    const f = 0.012 + 0.008 * Math.sin(t * Math.PI * 6);      // wandernde Wellen
+    turb.setAttribute('baseFrequency', `${f.toFixed(4)} ${(f * 2.6).toFixed(4)}`);
+    if (!swapped && t >= 0.4) { swapped = true; swap(); }
+    if (t < 1) rippleFrame = requestAnimationFrame(step);
+    else { disp.setAttribute('scale', '0'); stage.classList.remove('rippling'); }
+  };
+  rippleFrame = requestAnimationFrame(step);
 }
 
 async function loadWeather() {
@@ -457,9 +502,7 @@ const pages = {
   async home() {
     const [f1, svw, lfc, weather] = await Promise.all([loadF1(), loadMatches('svw'), loadMatches('lfc'), loadWeather()]);
     const next = [svw[0], lfc[0]].filter(Boolean).sort((a, b) => a.dt - b.dt);
-    const videoOn = bgVideoEnabled();
     return `
-      <div class="video-toggle"><button class="chip-btn" data-action="video">${videoOn ? '🎬 Video aus' : '🎬 Video an'}</button></div>
       <div class="sections">
         <section><h2>Nächstes Rennen</h2>${raceCard(f1.next, false)}</section>
         <section><h2>Nächste Spiele</h2>${next.map(m => matchCard(m, { label: 'comp', withTeam: true })).join('') || '<div class="card">Keine Spiele gefunden</div>'}</section>
@@ -642,7 +685,7 @@ function applyTheme() {
 async function render(force = false) {
   if (force) Object.values(cache).forEach(c => c.t = 0);
   applyTheme();
-  updateBgVideo();
+  updateBgLogos();
   const btn = document.getElementById('refresh');
   btn.classList.add('spin');
   if (!view.innerHTML) view.innerHTML = '<div class="loading">Lade Termine …</div>';
@@ -719,11 +762,6 @@ view.addEventListener('click', e => {
       calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() + n, 1);
       calDay = `${calMonth.getFullYear()}-${calMonth.getMonth()}-1`;
     }
-    return render();
-  }
-  // Startseite: Hintergrund-Video an/aus
-  if (e.target.closest('[data-action=video]')) {
-    localStorage.setItem('bgVideo', bgVideoEnabled() ? '0' : '1');
     return render();
   }
 });

@@ -264,28 +264,38 @@ body[data-theme="lfc"] .league tr.t-bottom td.tp { background: #555; }
 .btn.dazn { background: #0c161c; color: #f8fc00; }
 .btn.sky { background: linear-gradient(135deg, #000f9f, #e10a6e); }
 
-/* ---------- Hintergrund-Video (Startseite) ---------- */
-.bg-video { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: #000; display: none; }
-body.has-video .bg-video { display: block; }
-.bg-video iframe {
-  position: absolute; top: 50%; left: 50%; border: 0; pointer-events: none;
-  width: max(100vw, 177.78vh); height: max(100vh, 56.25vw);   /* 16:9 bildschirmfüllend */
-  transform: translate(-50%, -50%) scale(1.15);                  /* YouTube-Ränder abschneiden */
+/* ---------- Hintergrund (Startseite): Ferrari- und Werder-Logo im Wechsel ---------- */
+.bg-video {
+  position: fixed; inset: 0; z-index: -1; overflow: hidden; display: none;
+  --tint: #06321f;
+  background-color: var(--tint);
+  transition: background-color 1.2s ease;
 }
-.bg-video::after { /* Abdunkeln, damit die Karten lesbar bleiben */
+body.has-bg .bg-video { display: block; }
+.water-defs { position: absolute; width: 0; height: 0; }
+.logo-stage { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.logo-stage.rippling { filter: url(#water); }          /* Wasser-Verzerrung nur während des Wechsels */
+.bg-logo {
+  position: absolute; width: min(62vw, 46vh); max-height: 62vh; object-fit: contain;
+  opacity: 0; transform: scale(.94);
+  transition: opacity .9s ease, transform 1.4s ease;
+  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, .5));
+}
+.bg-logo.show { opacity: .9; transform: scale(1); }
+.bg-video::after { /* Vignette, damit die Karten lesbar bleiben */
   content: ""; position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, .35), rgba(0, 0, 0, .12) 40%, rgba(0, 0, 0, .45));
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, .05) 30%, rgba(0, 0, 0, .65) 100%);
 }
-body.has-video { background: transparent; }
-/* Startseite mit Video: keine grüne Kopfleiste, Logo und Knopf schweben über dem Video */
-body.has-video .top {
+body.has-bg { background: transparent; }
+/* Startseite mit Logo-Hintergrund: keine grüne Kopfleiste, Logo und Knopf schweben über dem Hintergrund */
+body.has-bg .top {
   background: linear-gradient(180deg, rgba(0, 0, 0, .55), transparent);
   box-shadow: none;
 }
-body.has-video .top::after { display: none; }
-body.has-video main h2 { color: #fff; text-shadow: 0 1px 4px rgba(0, 0, 0, .8); }
-/* Karten über dem Video: nur dunkel schattiert, ohne Effekte – das Video scheint leicht durch */
-body.has-video .card, body.has-video .match-card {
+body.has-bg .top::after { display: none; }
+body.has-bg main h2 { color: #fff; text-shadow: 0 1px 4px rgba(0, 0, 0, .8); }
+/* Karten über dem Hintergrund: nur dunkel schattiert, ohne Effekte */
+body.has-bg .card, body.has-bg .match-card {
   background: rgba(0, 0, 0, .66);
   border: 1px solid rgba(255, 255, 255, .18);
   box-shadow: 0 6px 18px rgba(0, 0, 0, .35);
@@ -293,24 +303,18 @@ body.has-video .card, body.has-video .match-card {
 }
 
 /* Schrift & Details auf Glas hell machen */
-body.has-video .sub, body.has-video .next-label { color: rgba(255, 255, 255, .78); }
-body.has-video .next-label b, body.has-video .title, body.has-video .wx-place, body.has-video .wx-temp { color: #fff; }
-body.has-video .tag { background: rgba(255, 255, 255, .22); color: #fff; }
-body.has-video .countdown { background: rgba(0, 0, 0, .45); border: 1px solid rgba(255, 255, 255, .4); }
-body.has-video .f1card { border-left: 4px solid #e10600; }
-body.has-video .mc-head { background: color-mix(in srgb, var(--p-800) 75%, transparent); }
-body.has-video .kick { border-color: rgba(255, 255, 255, .7); background: rgba(0, 0, 0, .25); }
-body.has-video .kick-date { background: rgba(255, 255, 255, .22); color: #fff; }
-body.has-video .kick-time { color: #fff; }
-body.has-video .mc-foot { color: rgba(255, 255, 255, .8); border-top-color: rgba(255, 255, 255, .3); }
-body.has-video .cd b { color: #fff; }
-body.has-video .team img { filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .5)); }
-.video-toggle { display: flex; justify-content: flex-end; margin-bottom: -6px; }
-.chip-btn {
-  border: 1px solid var(--line); background: #fff; color: var(--p-800); font-weight: 700; font-size: .75rem;
-  padding: 6px 12px; border-radius: 999px; cursor: pointer;
-}
-body.has-video .chip-btn { background: rgba(0, 0, 0, .5); color: #fff; border-color: rgba(255, 255, 255, .4); }
+body.has-bg .sub, body.has-bg .next-label { color: rgba(255, 255, 255, .78); }
+body.has-bg .next-label b, body.has-bg .title, body.has-bg .wx-place, body.has-bg .wx-temp { color: #fff; }
+body.has-bg .tag { background: rgba(255, 255, 255, .22); color: #fff; }
+body.has-bg .countdown { background: rgba(0, 0, 0, .45); border: 1px solid rgba(255, 255, 255, .4); }
+body.has-bg .f1card { border-left: 4px solid #e10600; }
+body.has-bg .mc-head { background: color-mix(in srgb, var(--p-800) 75%, transparent); }
+body.has-bg .kick { border-color: rgba(255, 255, 255, .7); background: rgba(0, 0, 0, .25); }
+body.has-bg .kick-date { background: rgba(255, 255, 255, .22); color: #fff; }
+body.has-bg .kick-time { color: #fff; }
+body.has-bg .mc-foot { color: rgba(255, 255, 255, .8); border-top-color: rgba(255, 255, 255, .3); }
+body.has-bg .cd b { color: #fff; }
+body.has-bg .team img { filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .5)); }
 
 /* ---------- Kalender ---------- */
 .cal { padding: 12px; }
